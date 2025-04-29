@@ -97,7 +97,6 @@ get_move_info(char *str, int *piece, int *ff, int *fr, int *tf, int *tr,
 	char	*s;
 	char	 c;
 	char	 tmp[1024] = { '\0' };
-	int	 i, j, len;
 	int	 lpiece, lff, lfr, ltf, ltr;
 	int	 matchVal = -1;
 
@@ -110,15 +109,15 @@ get_move_info(char *str, int *piece, int *ff, int *fr, int *tf, int *tr,
 		*s = '\0';
 
 	*piece = *ff = *fr = *tf = *tr = ALG_UNKNOWN;
-	len = strlen(tmp);
+	int len = strlen(tmp);
 
-	for (i = 0; alg_list[i]; i++) {
+	for (int i = 0; alg_list[i]; i++) {
 		lpiece = lff = lfr = ltf = ltr = ALG_UNKNOWN;
 
 		if (strlen(alg_list[i]) != (size_t)len)
 			continue;
 
-		for (j = len - 1; j >= 0; j--) {
+		for (int j = len - 1; j >= 0; j--) {
 			switch (alg_list[i][j]) {
 			case 'f':
 				if ((tmp[j] < 'a') || (tmp[j] > 'h'))
@@ -556,7 +555,7 @@ alg_unparse(game_state_t *gs, move_t *mt)
 		}
 	}
 
-  check:;
+  check:
 
 	fakeMove = *gs;
 	execute_move(&fakeMove, mt, 0);

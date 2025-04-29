@@ -31,6 +31,7 @@
 #ifndef _UTILS_H
 #define _UTILS_H
 
+#include <netinet/in.h>
 #include <stdint.h>
 #include <stdio.h>
 #include <time.h>
@@ -59,7 +60,7 @@
 #define CheckFlag(VAR, FLAG)	(VAR & (FLAG))
 
 __FICS_BEGIN_DECLS
-extern char		*dotQuad(unsigned int);
+extern char		*dotQuad(in_addr_t);
 extern char		*eattailwhite(char *);
 extern char		*eatwhite(char *);
 extern char		*eatword(char *);

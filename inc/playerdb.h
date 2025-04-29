@@ -26,6 +26,7 @@
 #ifndef _PLAYERDB_H
 #define _PLAYERDB_H
 
+#include <netinet/in.h>
 #include <stdbool.h>
 
 #include "command.h"
@@ -140,7 +141,7 @@ typedef struct _player {
 	pending		 p_from_list[MAX_PENDING];
 	pending		 p_to_list[MAX_PENDING];
 	simul_info_t	 simul_info;
-	unsigned int	 thisHost;
+	in_addr_t	 thisHost;
 
 	/*
 	 * All of this is saved between logins

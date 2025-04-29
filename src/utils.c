@@ -97,11 +97,9 @@ iswhitespace(int c)
 PUBLIC char *
 getword(char *str)
 {
-	int i;
 	static char word[MAX_WORD_SIZE];
 
-	i = 0;
-
+	int i = 0;
 	while (*str && !iswhitespace(*str)) {
 		word[i] = *str;
 		str++;
@@ -145,13 +143,10 @@ eatwhite(char *str)
 PUBLIC char *
 eattailwhite(char *str)
 {
-	int len;
-
 	if (str == NULL)
 		return NULL;
 
-	len = strlen(str);
-
+	int len = strlen(str);
 	while (len > 0 && iswhitespace(str[len - 1]))
 		len--;
 
@@ -171,7 +166,6 @@ nextword(char *str)
 PUBLIC int
 mail_string_to_address(char *addr, char *subj, char *str)
 {
-	FILE	*fp;
 	char	 com[1000];
 
 #ifdef SENDMAILPROG
@@ -180,7 +174,7 @@ mail_string_to_address(char *addr, char *subj, char *str)
 	snprintf(com, sizeof com, "%s -s \"%s\" %s", MAILPROGRAM, subj, addr);
 #endif
 
-	fp = popen(com, "w");
+	FILE *fp = popen(com, "w");
 	if (!fp)
 		return -1;
 
@@ -200,8 +194,7 @@ mail_string_to_user(int p, char *subj, char *str)
 	if (parray[p].emailAddress &&
 	    parray[p].emailAddress[0] &&
 	    safestring(parray[p].emailAddress)) {
-		return mail_string_to_address(parray[p].emailAddress, subj,
-		    str);
+		return mail_string_to_address(parray[p].emailAddress, subj, str);
 	} else {
 		return -1;
 	}
@@ -642,34 +635,29 @@ printablestring(char *str)
 PUBLIC char *
 xstrdup(const char *str)
 {
-	char *out;
-
 	if (str == NULL)
 		return NULL;
 
 	const size_t size = strlen(str) + 1;
 
-	out = rmalloc(size);
+	char *out = rmalloc(size);
 	return memcpy(out, str, size);
 }
 
 PUBLIC char *
 hms_desc(int t)
 {
-	int		days, hours, mins, secs;
 	static char	tstr[80];
 
-	days	= t / (60 * 60 * 24);
-	hours	= (t % (60 * 60 * 24)) / (60 * 60);
-	mins	= ((t % (60 * 60 * 24)) % (60 * 60)) / 60;
-	secs	= ((t % (60 * 60 * 24)) % (60 * 60)) % 60;
+	int days	= t / (60 * 60 * 24);
+	int hours	= (t % (60 * 60 * 24)) / (60 * 60);
+	int mins	= ((t % (60 * 60 * 24)) % (60 * 60)) / 60;
+	int secs	= ((t % (60 * 60 * 24)) % (60 * 60)) % 60;
 
 	if (days == 0 && hours == 0 && mins == 0) {
-		snprintf(tstr, sizeof tstr, "%d sec%s", secs, (secs == 1 ? "" :
-		    "s"));
+		snprintf(tstr, sizeof tstr, "%d sec%s", secs, (secs == 1 ? "" : "s"));
 	} else if (days == 0 && hours == 0) {
-		snprintf(tstr, sizeof tstr, "%d min%s", mins, (mins == 1 ? "" :
-		    "s"));
+		snprintf(tstr, sizeof tstr, "%d min%s", mins, (mins == 1 ? "" : "s"));
 	} else if (days == 0) {
 		snprintf(tstr, sizeof tstr, "%d hr%s, %d min%s, %d sec%s",
 		    hours, (hours == 1 ? "" : "s"),
@@ -734,7 +722,6 @@ fix_time(char *old_time)
 {
 	char		 date[5] = { '\0' };
 	char		 day[5] = { '\0' };
-	char		 i;
 	char		 month[5] = { '\0' };
 	static char	 new_time[20];
 
@@ -746,7 +733,7 @@ fix_time(char *old_time)
 		warnx("%s: sscanf: too few items (%s)", __func__, old_time);
 
 	if (date[2] != ',') {
-		i = date[0];
+		char i = date[0];
 		date[0] = '0';
 		date[1] = i;
 	}
@@ -869,11 +856,11 @@ lines_file(char *file)
 {
 	FILE	*fp;
 	char	 tmp[MAX_LINE_SIZE];
-	int	 lcount = 0;
 
 	if ((fp = fopen(file, "r")) == NULL)
-		return 0;
+	return 0;
 
+	int	 lcount = 0;
 	while (fgets(tmp, sizeof tmp, fp) != NULL && !feof(fp))
 		lcount++;
 
@@ -923,7 +910,7 @@ file_bplayer(char *fname)
  * machine (like a Sun). I have now changed it back.  --mann
  */
 PUBLIC char *
-dotQuad(unsigned int a)
+dotQuad(in_addr_t a)
 {
 	static char	 tmp[20];
 	unsigned char	*aa = (unsigned char *) &a;
@@ -1132,13 +1119,14 @@ search_directory(char *dir, char *filter, char **buffer, int buffersize)
 
 PUBLIC int
 display_directory(int p, char **buffer, int count)
-{ // 'buffer' contains 'count' string pointers.
-	int		 i;
+{
+	// 'buffer' contains 'count' string pointers.
 	multicol	*m = multicol_start(count);
 
+	int		 i;
 	for (i = 0; (i < count); i++)
 		multicol_store(m, *buffer++);
 	multicol_pprint(m, p, 78, 1);
 	multicol_end(m);
-	return (i);
+	return i;
 }

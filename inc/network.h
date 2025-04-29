@@ -26,6 +26,8 @@
 #ifndef _NETWORK_H
 #define _NETWORK_H
 
+#include <netinet/in.h>
+
 #include "command.h"	/* For MAX_STRING_LENGTH */
 
 #define NET_NETERROR		0
@@ -49,7 +51,7 @@ typedef struct _connection {
 	int		fd;
 	int		outFd;
 	int		status;
-	unsigned int	fromHost;
+	in_addr_t	fromHost;
 
 #ifdef TIMESEAL
 	char	sys[512];
@@ -90,7 +92,7 @@ extern unsigned int
 		 net_connected_host(int);
 extern void	 net_close(void);
 extern void	 net_close_connection(int);
-extern void	 ngc2(comstr_t *, int);
+extern void	 net_gc(comstr_t *, int);
 extern void	 turn_echo_off(int);
 extern void	 turn_echo_on(int);
 #endif    /* _NETWORK_H */

@@ -82,10 +82,6 @@ CheckShoutQuota(int p)
 PUBLIC int
 com_shout(int p, param_list param)
 {
-	int	count = 0;
-	int	p1;
-	int	timeleft; // time left for quota if applicable
-
 	if (!parray[p].registered) {
 		pprintf(p, "Only registered players can use the shout "
 		    "command.\n");
@@ -97,6 +93,7 @@ com_shout(int p, param_list param)
 		return COM_OK;
 	}
 
+	int	timeleft; // time left for quota if applicable
 	if (param[0].type == TYPE_NULL) {
 		if ((timeleft = CheckShoutQuota(p))) {
 			pprintf(p, "Next shout available in %d seconds.\n",
@@ -123,7 +120,8 @@ com_shout(int p, param_list param)
 		return COM_OK;
 	}
 
-	for (p1 = 0; p1 < p_num; p1++) {
+	int	count = 0;
+	for (int p1 = 0; p1 < p_num; p1++) {
 		if (p1 == p)
 			continue;
 		if (parray[p1].status != PLAYER_PROMPT)
@@ -154,9 +152,6 @@ com_shout(int p, param_list param)
 PUBLIC int
 com_cshout(int p, param_list param)
 {
-	int	count = 0;
-	int	p1;
-
 	if (!parray[p].registered) {
 		pprintf(p, "Only registered players can use the cshout "
 		    "command.\n");
@@ -174,7 +169,8 @@ com_cshout(int p, param_list param)
 		return COM_OK;
 	}
 
-	for (p1 = 0; p1 < p_num; p1++) {
+	int	count = 0;
+	for (int p1 = 0; p1 < p_num; p1++) {
 		if (p1 == p)
 			continue;
 		if (parray[p1].status != PLAYER_PROMPT)
@@ -199,10 +195,6 @@ com_cshout(int p, param_list param)
 PUBLIC int
 com_it(int p, param_list param)
 {
-	int	count = 0;
-	int	p1;
-	int	timeleft;
-
 	if (!parray[p].registered) {
 		pprintf(p, "Only registered players can use the it command.\n");
 		return COM_OK;
@@ -213,6 +205,7 @@ com_it(int p, param_list param)
 		return COM_OK;
 	}
 
+	int	timeleft;
 	if (param[0].type == TYPE_NULL) {
 		if ((timeleft = CheckShoutQuota(p))) {
 			pprintf(p, "Next shout available in %d seconds.\n",
@@ -239,7 +232,8 @@ com_it(int p, param_list param)
 		return COM_OK;
 	}
 
-	for (p1 = 0; p1 < p_num; p1++) {
+	int	count = 0;
+	for (int p1 = 0; p1 < p_num; p1++) {
 		if (p1 == p)
 			continue;
 		if (parray[p1].status != PLAYER_PROMPT)
@@ -406,14 +400,13 @@ PUBLIC int
 com_ptell(int p, param_list param)
 {
 	char	tmp[MAX_LINE_SIZE];
-	int	p1;
 
 	if (parray[p].partner < 0) {
 		pprintf(p, "You do not have a partner at present.\n");
 		return COM_OK;
 	}
 
-	p1 = parray[p].partner;
+	int p1 = parray[p].partner;
 
 	if (p1 < 0 ||
 	    parray[p1].status == PLAYER_PASSWORD ||
@@ -456,8 +449,6 @@ com_ptell(int p, param_list param)
 PRIVATE int
 chtell(int p, int ch, char *msg)
 {
-	int	p1, count = 0;
-
 	if (ch == 0 && parray[p].adminLevel == 0) {
 		pprintf(p, "Only admins may send tells to channel 0.\n");
 		return COM_OK;
@@ -474,7 +465,8 @@ chtell(int p, int ch, char *msg)
 		return COM_OK;
 	}
 
-	for (p1 = 0; p1 < p_num; p1++) {
+	int	count = 0;
+	for (int p1 = 0; p1 < p_num; p1++) {
 		if (p1 == p || parray[p1].status != PLAYER_PROMPT)
 			continue;
 		if (on_channel(ch, p1) && !player_censored(p1, p)) {
@@ -496,10 +488,6 @@ chtell(int p, int ch, char *msg)
 PUBLIC int
 com_whisper(int p, param_list param)
 {
-	int	count = 0;
-	int	g;
-	int	p1;
-
 	if (!parray[p].num_observe && parray[p].game < 0) {
 		pprintf(p, "You are not playing or observing a game.\n");
 		return COM_OK;
@@ -511,12 +499,10 @@ com_whisper(int p, param_list param)
 		return COM_OK;
 	}
 
-	if (parray[p].game >= 0)
-		g = parray[p].game;
-	else
-		g = parray[p].observe_list[0];
+	int g = (parray[p].game >= 0) ? parray[p].game : parray[p].observe_list[0];
 
-	for (p1 = 0; p1 < p_num; p1++) {
+	int	count = 0;
+	for (int p1 = 0; p1 < p_num; p1++) {
 		if (p1 == p)
 			continue;
 		if (parray[p1].status != PLAYER_PROMPT)

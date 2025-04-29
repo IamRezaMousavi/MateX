@@ -6,10 +6,8 @@
 
 #include <arpa/telnet.h>
 #include <netinet/in.h>
-#include <sys/socket.h>
 #include <sys/select.h>
 #include <sys/ioctl.h>
-#include <arpa/inet.h>
 #include <string.h>
 #include <unistd.h>
 #include <errno.h>
@@ -45,16 +43,16 @@ findConnection(int fd)
 }
 
 PUBLIC int
-net_addConnection(int fd, unsigned int fromHost)
+net_addConnection(int fd, in_addr_t fromHost)
 {
-	int noblock = 1;
-
 	if (findConnection(fd) >= 0) {
 		fprintf(stderr, "FICS: FD already in connection table!\n");
 		return -1;
 	}
 	if (numConnections >= max_connections)
 		return -1;
+
+	int noblock = 1;
 	if (ioctl(fd, FIONBIO, &noblock) == -1) {
 		fprintf(stderr, "Error setting nonblocking mode errno=%d\n",
 		    errno);
@@ -137,10 +135,9 @@ remConnection(int fd)
 PRIVATE void
 net_flushme(int which)
 {
-	int sent;
+	int sent = send(con[which].outFd, con[which].sndbuf, con[which].sndbufpos, 0);
 
-	if ((sent = send(con[which].outFd, con[which].sndbuf,
-	    con[which].sndbufpos, 0)) == -1) {
+	if (sent == -1) {
 		if (errno != EPIPE) { // EPIPE = they've disconnected
 			fprintf(stderr, "FICS: net_flushme(%d) couldn't send, "
 			    "errno=%d.\n",
@@ -160,8 +157,7 @@ net_flushme(int which)
 	if (con[which].sndbufsize > MAX_STRING_LENGTH &&
 	    con[which].sndbufpos < MAX_STRING_LENGTH) {
 		// time to shrink the buffer...
-		con[which].sndbuf = rrealloc(con[which].sndbuf,
-		    MAX_STRING_LENGTH);
+		con[which].sndbuf = rrealloc(con[which].sndbuf, MAX_STRING_LENGTH);
 		con[which].sndbufsize = MAX_STRING_LENGTH;
 	}
 }
@@ -170,23 +166,22 @@ PRIVATE void
 net_flush_all_connections(void)
 {
 	fd_set		 writefds;
-	int		 which;
-	struct timeval	 to;
-
 	FD_ZERO(&writefds);
 
-	for (which = 0; which < MAX_PLAYER; which++) {
-		if (con[which].status == NETSTAT_CONNECTED &&
-		    con[which].sndbufpos)
+	for (int which = 0; which < MAX_PLAYER; which++) {
+		if (con[which].status == NETSTAT_CONNECTED
+			&& con[which].sndbufpos)
 			FD_SET(con[which].outFd, &writefds);
-	}
+		}
 
-	to.tv_usec = 0;
-	to.tv_sec = 0;
+	struct timeval timeout = {
+		.tv_sec = 0,
+		.tv_usec = 0,
+	};
 
-	select(no_file, NULL, &writefds, NULL, &to);
+	select(no_file, NULL, &writefds, NULL, &timeout);
 
-	for (which = 0; which < MAX_PLAYER; which++) {
+	for (int which = 0; which < MAX_PLAYER; which++) {
 		if (FD_ISSET(con[which].outFd, &writefds))
 			net_flushme(which);
 	}
@@ -316,7 +311,8 @@ net_send_string(int fd, char *str, int format)
 				break;
 			case '\033':
 				con[which].outPos -= 3;
-				// XXX: fallthrough here?
+				sendme(which, str, 1);
+				break;
 			default:
 				sendme(which, str, 1);
 			}
@@ -587,7 +583,7 @@ turn_echo_off(int fd)
 		warn("%s: cannot send", __func__);
 }
 
-PUBLIC unsigned int
+PUBLIC in_addr_t
 net_connected_host(int fd)
 {
 	int which;
@@ -600,17 +596,13 @@ net_connected_host(int fd)
 }
 
 PUBLIC void
-ngc2(comstr_t *cs, int timeout)
+net_gc(comstr_t *cs, int timeout)
 {
-	fd_set			 readfds;
-	int			 fd, loop, nfound, lineComplete;
-	socklen_t		 cli_len = sizeof(struct sockaddr_in);
-	struct sockaddr_in	 cli_addr;
-	struct timeval		 to;
-
-	while ((fd = accept(sockfd, (struct sockaddr *) &cli_addr, &cli_len)) !=
-	    -1) {
-		if (net_addConnection(fd, cli_addr.sin_addr.s_addr)) {
+	int					fd;
+	socklen_t			addr_len = sizeof(struct sockaddr_in);
+	struct sockaddr_in	client_addr;
+	while ((fd = accept(sockfd, (struct sockaddr *) &client_addr, &addr_len)) != -1) {
+		if (net_addConnection(fd, client_addr.sin_addr.s_addr)) {
 			fprintf(stderr, "FICS is full.  fd = %d.\n", fd);
 			psend_raw_file(fd, mess_dir, MESS_FULL);
 			close(fd);
@@ -620,51 +612,54 @@ ngc2(comstr_t *cs, int timeout)
 	}
 
 	if (errno != EWOULDBLOCK) {
-		fprintf(stderr, "FICS: Problem with accept().  errno=%d\n",
-		    errno);
+		fprintf(stderr, "FICS: Problem with accept().  errno=%d\n", errno);
 	}
 	net_flush_all_connections();
 
+	fd_set			 readfds;
 	FD_ZERO(&readfds);
-	for (loop = 0; loop < no_file; loop++) {
+	for (int loop = 0; loop < no_file; loop++) {
 		if (con[loop].status != NETSTAT_EMPTY)
 			FD_SET(con[loop].fd, &readfds);
 	}
 
-	to.tv_usec	= 0;
-	to.tv_sec	= timeout;
+	struct timeval _timeout = {
+		.tv_sec = timeout,
+		.tv_usec = 0,
+	};
 
-	nfound = select(no_file, &readfds, NULL, NULL, &to);
+	int nfound = select(no_file, &readfds, NULL, NULL, &_timeout);
 
 	/* XXX: unused */
 	(void) nfound;
 
-	for (loop = 0; loop < no_file; loop++) {
-		if (con[loop].status != NETSTAT_EMPTY) {
-			fd = con[loop].fd;
+	for (int loop = 0; loop < no_file; loop++) {
+		if (con[loop].status == NETSTAT_EMPTY)
+			continue;
+		fd = con[loop].fd;
 
-			if ((lineComplete = readline2(cs, fd)) == 0) {
-				// partial line: do nothing
+		int lineComplete;
+		if ((lineComplete = readline2(cs, fd)) == 0) {
+			// partial line: do nothing
+			continue;
+		}
+
+		if (lineComplete > 0) { // complete line: process it
+#ifdef TIMESEAL
+			if (!parseInput(cs->com, &con[loop]))
+				continue;
+#endif
+			if (process_input(fd, cs->com) != COM_LOGOUT) {
+				net_flush_connection(fd);
 				continue;
 			}
-
-			if (lineComplete > 0) { // complete line: process it
-#ifdef TIMESEAL
-				if (!parseInput(cs->com, &con[loop]))
-					continue;
-#endif
-				if (process_input(fd, cs->com) != COM_LOGOUT) {
-					net_flush_connection(fd);
-					continue;
-				}
-			}
-
-			/*
-			 * Disconnect anyone who gets here
-			 */
-			process_disconnection(fd);
-			net_close_connection(fd);
 		}
+
+		/*
+			* Disconnect anyone who gets here
+			*/
+		process_disconnection(fd);
+		net_close_connection(fd);
 	}
 }
 

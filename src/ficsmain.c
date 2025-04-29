@@ -175,7 +175,7 @@ main_event_loop(void)
 	int sockfd = -1;
 
 	while (1) {
-		ngc2(&str, HEARTBEATTIME);
+		net_gc(&str, HEARTBEATTIME);
 
 		if (process_heartbeat(&sockfd) == COM_LOGOUT && sockfd != -1) {
 			process_disconnection(sockfd);

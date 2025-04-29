@@ -101,13 +101,13 @@ PUBLIC int
 board_init(game_state_t *b, char *category, char *board)
 {
 	int	retval;
-	int	wval;
 
 	if (category == NULL || board == NULL ||
 	    !category[0] || !board[0]) {
 		retval = board_read_file("standard", "standard", b);
 	} else {
 		if (!strcmp(category, "wild")) {
+			int	wval;
 			if (sscanf(board, "%d", &wval) == 1 &&
 			    wval >= 1 &&
 			    wval <= 4)

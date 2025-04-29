@@ -40,6 +40,7 @@
 
 #include "command.h"
 
+#include <netinet/in.h>
 #include <sys/param.h>
 #include <string.h>
 #include <unistd.h>
@@ -881,7 +882,7 @@ process_password(int p, char *password)
 	int		 fd;
 	int		 messnum;
 	int		 p1;
-	unsigned int	 fromHost;
+	in_addr_t	 fromHost;
 
 	turn_echo_on(parray[p].socket);
 
@@ -1150,7 +1151,7 @@ process_input(int fd, char *com_string)
 }
 
 PUBLIC int
-process_new_connection(int fd, unsigned int fromHost)
+process_new_connection(int fd, in_addr_t fromHost)
 {
 	int p = player_new();
 

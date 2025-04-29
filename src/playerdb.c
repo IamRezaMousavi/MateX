@@ -156,9 +156,7 @@ player_init(int startConsole)
 PUBLIC int
 player_new(void)
 {
-	int new;
-
-	new = get_empty_slot();
+	int new = get_empty_slot();
 	player_zero(new);
 	return new;
 }
@@ -355,8 +353,6 @@ player_clear(int p)
 PUBLIC int
 player_remove(int p)
 {
-	int i;
-
 	if (!player_num_ok_chk(p)) {
 		warnx("%s: invalid player number %d", __func__, p);
 		return -1;
@@ -367,7 +363,7 @@ player_remove(int p)
 
 	if (parray[p].simul_info.numBoards) {	// Player disconnected in
 						// middle of simul
-		for (i = 0; i < parray[p].simul_info.numBoards; i++) {
+		for (int i = 0; i < parray[p].simul_info.numBoards; i++) {
 			if (parray[p].simul_info.boards[i] >= 0) {
 				game_disconnect(parray[p].simul_info.boards[i],
 				    p);
@@ -382,7 +378,7 @@ player_remove(int p)
 		game_disconnect(parray[p].game, p);
 	}
 
-	for (i = 0; i < p_num; i++) {
+	for (int i = 0; i < p_num; i++) {
 		if (parray[i].status == PLAYER_EMPTY)
 			continue;
 

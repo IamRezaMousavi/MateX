@@ -61,18 +61,15 @@ ShutDown(void)
 PUBLIC void
 ShutHeartBeat(void)
 {
-	int	crossing = 0;
-	int	p1;
-	int	timeLeft;
-	time_t	t = time(NULL);
-
 	if (!shutdownTime)
 		return;
 	if (!lastTimeLeft)
 		lastTimeLeft = shutdownTime;
 
-	timeLeft = shutdownTime - (t - shutdownStartTime);
+	time_t	t = time(NULL);
+	int timeLeft = shutdownTime - (t - shutdownStartTime);
 
+	int	crossing = 0;
 	if (lastTimeLeft > 3600 && timeLeft <= 3600)
 		crossing = 1;
 	if (lastTimeLeft > 2400 && timeLeft <= 2400)
@@ -101,7 +98,7 @@ ShutHeartBeat(void)
 			    reason);
 		}
 
-		for (p1 = 0; p1 < p_num; p1++) {
+		for (int p1 = 0; p1 < p_num; p1++) {
 			if (parray[p1].status != PLAYER_PROMPT)
 				continue;
 
@@ -131,13 +128,11 @@ ShutHeartBeat(void)
 PUBLIC int
 check_and_print_shutdown(int p)
 {
-	int	timeLeft;
-	time_t	t = time(NULL);
-
 	if (!shutdownTime)
 		return 0;     // no shutdown
 
-	timeLeft = shutdownTime - (t - shutdownStartTime);
+	time_t	t = time(NULL);
+	int timeLeft = shutdownTime - (t - shutdownStartTime);
 
 	pprintf(p, "\n    **** Server going down in %d minutes and %d seconds. "
 	    "****\n",
