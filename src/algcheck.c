@@ -30,13 +30,13 @@
 
 #include <string.h>
 #include <ctype.h>
+#include <stdio.h>
 #include <err.h>
 
 #include "common.h"
 #include "board.h"
 #include "maxxes-utils.h"
 #include "movecheck.h"
-#include "utils.h"
 
 #define ALG_UNKNOWN -1
 

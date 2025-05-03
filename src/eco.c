@@ -14,7 +14,7 @@
 #include "common.h"
 #include "board.h"
 #include "command.h"
-#include "config.h"
+#include "ficspaths.h"
 #include "gamedb.h"
 #include "gameproc.h"
 #include "obsproc.h"

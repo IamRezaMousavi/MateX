@@ -51,17 +51,13 @@
 #include "common.h"
 #include "board.h"
 #include "command.h"
-#include "comproc.h"
-#include "eco.h"
 #include "formula.h"
 #include "gamedb.h"
 #include "lists.h"
-#include "network.h"
 #include "obsproc.h"
 #include "playerdb.h"
 #include "ratings.h"
 #include "rmalloc.h"
-#include "talkproc.h"
 #include "utils.h"
 
 struct print_bh_context {

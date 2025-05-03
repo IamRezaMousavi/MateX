@@ -56,11 +56,8 @@
 
 
 #include "common.h"
-#include "command.h"
-#include "config.h"
 #include "gamedb.h"
 #include "lists.h"
-#include "network.h"
 #include "playerdb.h"
 #include "ratings.h"
 #include "rmalloc.h"

@@ -72,7 +72,6 @@
 #include "network.h"
 #include "ratings.h"
 #include "rmalloc.h"
-#include "talkproc.h"
 #include "utils.h"
 
 PUBLIC player	 parray[PARRAY_SIZE];

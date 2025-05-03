@@ -48,13 +48,11 @@
 #include "common.h"
 #include "board.h"
 #include "command.h"
-#include "comproc.h"
 #include "config.h"
 #ifndef IGNORE_ECO
 #include "eco.h"
 #endif
 #include "legal.h"
-#include "legal2.h"
 #include "network.h"
 #include "playerdb.h"
 #include "ratings.h"
@@ -146,7 +144,6 @@ GetArgs(int argc, char *argv[])
 				break;
 			case 'l':
 				puts(legalNotice);
-				puts(legalNotice2);
 				exit(0);
 			case 'v':
 				printf("%s %s\n", VERS_NUM, COMP_DATE);

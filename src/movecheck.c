@@ -39,8 +39,6 @@
 #include "board.h"
 #include "common.h"
 #include "gamedb.h"
-#include "network.h"
-#include "playerdb.h"
 #include "utils.h"
 
 /*

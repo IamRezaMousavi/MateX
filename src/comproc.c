@@ -61,15 +61,11 @@
 #endif
 
 #include "common.h"
-#include "board.h"
 #include "command.h"
 #include "config.h"
-#include "eco.h"
 #include "fics_getsalt.h"
 #include "ficsmain.h"
-#include "formula.h"
 #include "gamedb.h"
-#include "gameproc.h"
 #include "lists.h"
 #include "multicol.h"
 #include "network.h"

@@ -50,7 +50,6 @@
 #include "formula.h" /* SetValidFormula() */
 #include "playerdb.h"
 #include "rmalloc.h"
-#include "talkproc.h"
 #include "utils.h"
 
 PRIVATE int

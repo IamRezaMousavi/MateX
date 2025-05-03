@@ -15,8 +15,7 @@
 
 
 #include "common.h"
-#include "config.h"
-#include "ficsmain.h"
+#include "ficspaths.h"
 #include "maxxes-utils.h"
 #include "playerdb.h"
 #include "rmalloc.h"

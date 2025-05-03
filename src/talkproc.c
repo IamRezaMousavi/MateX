@@ -49,10 +49,8 @@
 #include "comproc.h"
 #include "formula.h"
 #include "gamedb.h"
-#include "gameproc.h"
 #include "lists.h"
 #include "maxxes-utils.h"
-#include "network.h"
 #include "playerdb.h"
 #include "utils.h"
 
