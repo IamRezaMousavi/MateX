@@ -1,0 +1,44 @@
+BasedOnStyle:  LLVM
+AlignAfterOpenBracket: BlockIndent
+AllowAllArgumentsOnNextLine: false
+AlignArrayOfStructures: Left
+AlignConsecutiveAssignments:
+  Enabled:         true
+AlignConsecutiveBitFields:
+  Enabled:         true
+AlignConsecutiveDeclarations:
+  Enabled:         true
+AlignConsecutiveMacros:
+  Enabled:         true
+AlignConsecutiveShortCaseStatements:
+  Enabled:         true
+AlignEscapedNewlines: Left
+AllowShortBlocksOnASingleLine: Empty
+AllowShortCaseLabelsOnASingleLine: false
+AllowShortEnumsOnASingleLine: false
+AllowShortFunctionsOnASingleLine: Empty
+AllowShortLambdasOnASingleLine: Inline
+AlwaysBreakTemplateDeclarations: Yes
+BinPackArguments: false
+BraceWrapping:
+  SplitEmptyFunction: false
+  SplitEmptyRecord: false
+  SplitEmptyNamespace: false
+BreakAfterJavaFieldAnnotations: true
+BreakBeforeBinaryOperators: All
+ColumnLimit:     140
+IndentCaseBlocks: false
+IndentCaseLabels: true
+IndentExternBlock: NoIndent
+IndentGotoLabels: false
+IndentPPDirectives: None
+IndentWidth:     2
+QualifierAlignment: Left
+RemoveBracesLLVM: false
+SeparateDefinitionBlocks: Always
+SpaceAfterTemplateKeyword: false
+SpaceBeforeCtorInitializerColon: false
+SpaceBeforeInheritanceColon: false
+SpaceBeforeSquareBrackets: false
+SpacesInContainerLiterals: false
+TabWidth:        4
