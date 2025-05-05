@@ -36,6 +36,7 @@
 #include "gameproc.h"
 
 #include <sys/dir.h>
+#include <stdbool.h>
 #include <stdlib.h>
 #include <ctype.h>
 #include <err.h>
@@ -65,7 +66,7 @@ game_ended(int g, int winner, int why)
 	char	 outstr[200] = { '\0' };
 	char	 tmp[200] = { '\0' };
 	char	 winSymbol[10] = { '\0' };
-	int	 beingplayed = 0; // i.e. it wasn't loaded for adjudication
+	bool	 beingplayed = false; // i.e. it wasn't loaded for adjudication
 	int	 gl = garray[g].link;
 	int	 isDraw = 0;
 	int	 p;
@@ -1613,7 +1614,8 @@ com_simmatch(int p, param_list param)
 {
 	char	tmp[100] = { '\0' };
 	int	num;
-	int	p1, g, adjourned;
+	int	p1, g;
+	bool adjourned;
 
 	if (parray[p].game >= 0 && garray[parray[p].game].status ==
 	    GAME_EXAMINE) {
@@ -1663,10 +1665,10 @@ com_simmatch(int p, param_list param)
 		unobserveAll(p1);
 
 		g = game_new();
-		adjourned = 0;
+		adjourned = false;
 
 		if (game_read(g, p, p1) >= 0)
-			adjourned = 1;
+			adjourned = true;
 
 		if (!adjourned) { // no adjourned game - so begin a new game.
 			game_remove(g);
@@ -1778,7 +1780,7 @@ com_simmatch(int p, param_list param)
 
 	if (adjourned) {
 		if (!(garray[g].type == TYPE_UNTIMED))
-			adjourned = 0;
+			adjourned = false;
 	}
 
 	game_remove(g);

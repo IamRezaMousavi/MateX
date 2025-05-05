@@ -41,8 +41,8 @@
 #include "talkproc.h"
 
 #include <sys/resource.h>
+#include <stdbool.h>
 #include <string.h>
-
 
 #include "common.h"
 #include "command.h"
@@ -864,7 +864,6 @@ com_mailmess(int p, param_list param)
 	char	 fname[MAX_FILENAME_SIZE];
 	char	 mdir[MAX_FILENAME_SIZE];
 	char	 subj[120];
-	int	 ret, too_long;
 
 	if (!parray[p].registered) {
 		pprintf(p, "Only registered people can use the mailmess "
@@ -880,8 +879,8 @@ com_mailmess(int p, param_list param)
 		snprintf(subj, sizeof subj, "Your FICS messages from server %s",
 		    fics_hostname);
 
-		ret = snprintf(fname, sizeof fname, "%s/%s", mdir, filename);
-		too_long = (ret < 0 || (size_t)ret >= sizeof fname);
+		int ret = snprintf(fname, sizeof fname, "%s/%s", mdir, filename);
+		bool too_long = (ret < 0 || (size_t)ret >= sizeof fname);
 
 		if (!too_long) {
 			mail_file_to_user(p, subj, fname);

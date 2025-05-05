@@ -51,6 +51,7 @@
 #include "playerdb.h"
 
 #include <sys/dir.h>
+#include <stdbool.h>
 #include <stdint.h>
 #include <stdlib.h>
 #include <unistd.h>
@@ -132,11 +133,9 @@ player_array_init(void)
 PUBLIC void
 player_init(int startConsole)
 {
-	int p;
-
 	if (startConsole) {
 		net_addConnection(0, 0);
-		p = player_new();
+		int p = player_new();
 
 		parray[p].login		= xstrdup("console");
 		parray[p].name		= xstrdup("console");
@@ -1659,13 +1658,12 @@ player_lastconnect(int p)
 	char		 ipstr[20];
 	char		 loginName[MAX_LOGIN_NAME];
 	int		 inout, registered;
-	int		 ret, too_long;
 	long int	 lval;
 	time_t		 last = 0;
 
-	ret = snprintf(fname, sizeof fname, "%s/player_data/%c/%s.%s",
+	int ret = snprintf(fname, sizeof fname, "%s/player_data/%c/%s.%s",
 	    stats_dir, parray[p].login[0], parray[p].login, STATS_LOGONS);
-	too_long = (ret < 0 || (size_t)ret >= sizeof fname);
+	bool too_long = (ret < 0 || (size_t)ret >= sizeof fname);
 
 	if (too_long) {
 		fprintf(stderr, "FICS: %s: warning: snprintf truncated\n",

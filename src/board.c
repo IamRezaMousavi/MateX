@@ -34,7 +34,7 @@
 #include <stdlib.h>
 #include <limits.h>
 #include <string.h>
-
+#include <stdbool.h>
 
 #include "common.h"
 #include "gamedb.h"
@@ -800,7 +800,7 @@ style10(game_state_t *b, move_t *ml)
 {
 	char	 tmp[80];
 	int	 f, r;
-	int	 ret, too_long;
+	int	 ret;
 	int	 ws, bs;
 
 	board_calc_strength(b, &ws, &bs);
@@ -879,7 +879,7 @@ style10(game_state_t *b, move_t *ml)
 
 	    (orient == WHITE ? 0 : 1));
 
-	too_long = (ret < 0 || (size_t)ret >= sizeof tmp);
+	bool too_long = (ret < 0 || (size_t)ret >= sizeof tmp);
 
 	if (too_long) {
 		fprintf(stderr, "FICS: %s: warning: snprintf truncated\n",
@@ -963,7 +963,7 @@ style12(game_state_t *b, move_t *ml)
 {
 	char	 tmp[80];
 	int	 f, r;
-	int	 ret, too_long;
+	int	 ret;
 	int	 ws, bs;
 
 	board_calc_strength(b, &ws, &bs);
@@ -1038,7 +1038,7 @@ style12(game_state_t *b, move_t *ml)
 
 	    (orient == WHITE ? 0 : 1));
 
-	too_long = (ret < 0 || (size_t)ret >= sizeof tmp);
+	int too_long = (ret < 0 || (size_t)ret >= sizeof tmp);
 
 	if (too_long) {
 		fprintf(stderr, "FICS: %s: warning: snprintf truncated\n",
@@ -1059,9 +1059,9 @@ board_read_file(char *category, char *gname, game_state_t *gs)
 	int	 f, r;
 	int	 onColor = -1;
 	int	 onFile = -1;
-	int	 onNewLine = 1;
 	int	 onPiece = -1;
 	int	 onRank = -1;
+	bool	onNewLine = true;
 
 	msnprintf(fname, sizeof fname, "%s/%s/%s", board_dir, category, gname);
 
@@ -1106,7 +1106,7 @@ board_read_file(char *category, char *gname, game_state_t *gs)
 				continue;
 			}
 
-			onNewLine = 0;
+			onNewLine = false;
 		} else {
 			switch (c) {
 			case 'P':

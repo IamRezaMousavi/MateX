@@ -31,6 +31,8 @@
 
 #include "movecheck.h"
 
+#include <stdbool.h>
+
 #if __linux__
 #include <bsd/string.h>
 #endif
@@ -778,7 +780,8 @@ PRIVATE int
 move_calculate(game_state_t *gs, move_t *mt, int promote)
 {
 	game_state_t	fakeMove;
-	int		ret, too_long;
+	int		ret;
+	bool too_long;
 
 	mt->pieceCaptured	= gs->board[mt->toFile][mt->toRank];
 	mt->enPassant		= 0;	// Don't know yet,
@@ -1082,7 +1085,7 @@ parse_move(char *mstr, game_state_t *gs, move_t *mt, int promote)
 PUBLIC int
 execute_move(game_state_t *gs, move_t *mt, int check_game_status)
 {
-	int	i, j, foobar;
+	int	foobar;
 	int	movedPiece;
 	int	tookPiece;
 
@@ -1140,7 +1143,7 @@ execute_move(game_state_t *gs, move_t *mt, int check_game_status)
 		/*
 		 * Check en-passant flags for next moves
 		 */
-		for (i = 0; i < 8; i++) {
+		for (int i = 0; i < 8; i++) {
 			gs->ep_possible[0][i] = 0;
 			gs->ep_possible[1][i] = 0;
 		}
@@ -1238,8 +1241,8 @@ execute_move(game_state_t *gs, move_t *mt, int check_game_status)
 
 			foobar = 0;
 
-			for (i = 0; i < 8; i++) {
-				for (j = 0; j < 8; j++) {
+			for (int i = 0; i < 8; i++) {
+				for (int j = 0; j < 8; j++) {
 					switch (piecetype(gs->board[i][j])) {
 					case KNIGHT:
 					case BISHOP:

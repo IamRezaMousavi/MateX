@@ -48,6 +48,7 @@
 #include "comproc.h"
 
 #include <sys/resource.h>
+#include <stdbool.h>
 #include <stdlib.h>
 #include <unistd.h>
 #include <ctype.h>
@@ -157,7 +158,7 @@ com_news(int p, param_list param)
 	char		 count[10] = { '\0' };
 	char		 filename[MAX_FILENAME_SIZE] = { '\0' };
 	char		 junk[MAX_LINE_SIZE] = { '\0' };
-	int		 found = 0;
+	bool		 found = false;
 	long int	 lval = 0;
 	time_t		 crtime = 0;
 
@@ -236,7 +237,7 @@ com_news(int p, param_list param)
 			crtime = lval;
 
 			if (!strcmp(count, param[0].val.word)) {
-				found = 1;
+				found = true;
 
 				junkp = nextword(junkp);
 				junkp = nextword(junkp);
@@ -909,7 +910,7 @@ who_verbose(int p, int num, int plist[])
 	char	 playerLine[255] = { '\0' };
 	char	 tmp[255] = { '\0' };
 	int	 p1;
-	int	 ret, too_long;
+	int	 ret;
 
 	pprintf(p, " +---------------------------------------------------------------+\n");
 	pprintf(p, " |      User              Standard    Blitz        On for   Idle |\n");
@@ -957,7 +958,7 @@ who_verbose(int p, int num, int plist[])
 		} else {
 			ret = snprintf(tmp, sizeof tmp, " %-17s", p1WithAttrs);
 
-			too_long = (ret < 0 || (size_t)ret >= sizeof tmp);
+			bool too_long = (ret < 0 || (size_t)ret >= sizeof tmp);
 
 			if (too_long) {
 				fprintf(stderr, "FICS: %s: warning: "
@@ -1628,11 +1629,9 @@ com_alias(int p, param_list param)
 PUBLIC int
 com_unalias(int p, param_list param)
 {
-	int al;
-
 	ASSERT(param[0].type == TYPE_WORD);
 
-	al = alias_lookup(param[0].val.word, parray[p].alias_list,
+	int al = alias_lookup(param[0].val.word, parray[p].alias_list,
 	    parray[p].numAlias);
 
 	if (al < 0) {

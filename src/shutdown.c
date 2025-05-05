@@ -6,6 +6,7 @@
 #include "shutdown.h"
 
 #include <stdlib.h>
+#include <stdbool.h>
 
 #if __linux__
 #include <bsd/string.h>
@@ -69,23 +70,23 @@ ShutHeartBeat(void)
 	time_t	t = time(NULL);
 	int timeLeft = shutdownTime - (t - shutdownStartTime);
 
-	int	crossing = 0;
+	bool	crossing = false;
 	if (lastTimeLeft > 3600 && timeLeft <= 3600)
-		crossing = 1;
+		crossing = true;
 	if (lastTimeLeft > 2400 && timeLeft <= 2400)
-		crossing = 1;
+		crossing = true;
 	if (lastTimeLeft > 1200 && timeLeft <= 1200)
-		crossing = 1;
+		crossing = true;
 	if (lastTimeLeft > 600 && timeLeft <= 600)
-		crossing = 1;
+		crossing = true;
 	if (lastTimeLeft > 300 && timeLeft <= 300)
-		crossing = 1;
+		crossing = true;
 	if (lastTimeLeft > 120 && timeLeft <= 120)
-		crossing = 1;
+		crossing = true;
 	if (lastTimeLeft > 60 && timeLeft <= 60)
-		crossing = 1;
+		crossing = true;
 	if (lastTimeLeft > 10 && timeLeft <= 10)
-		crossing = 1;
+		crossing = true;
 
 	if (crossing) {
 		fprintf(stderr, "FICS:   **** Server going down in %d minutes "
@@ -166,7 +167,7 @@ com_shutdown(int p, param_list param)
 	shutdownStartTime = time(NULL);
 
 	if (shutdownTime) {   // Cancel any pending shutdowns
-		for (p1 = 0; p1 < p_num; p1++) {
+		for (int p1 = 0; p1 < p_num; p1++) {
 			if (parray[p1].status != PLAYER_PROMPT)
 				continue;
 			pprintf(p1, "\n\n    **** Server shutdown canceled by "

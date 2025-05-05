@@ -16,6 +16,7 @@
 #include "adminproc.h"
 
 #include <sys/param.h>
+#include <stdbool.h>
 #include <stdlib.h>
 #include <string.h>
 #include <unistd.h>
@@ -55,7 +56,8 @@ PUBLIC int num_anews = -1;
 PUBLIC int
 com_adjudicate(int p, param_list param)
 {
-	int	wp, wconnected, bp, bconnected, g, inprogress, confused = 0;
+	int	wp, wconnected, bp, bconnected, g;
+	bool confused = false;
 
 	ASSERT(parray[p].adminLevel >= ADMIN_ADMIN);
 
@@ -67,7 +69,7 @@ com_adjudicate(int p, param_list param)
 		return COM_OK;
 	}
 
-	inprogress = (parray[wp].game >= 0 && parray[wp].opponent == bp);
+	bool inprogress = (parray[wp].game >= 0 && parray[wp].opponent == bp);
 
 	if (inprogress) {
 		g = parray[wp].game;
@@ -75,7 +77,7 @@ com_adjudicate(int p, param_list param)
 		g = game_new();
 
 		if (game_read(g, wp, bp) < 0) {
-			confused = 1;
+			confused = true;
 			pprintf(p, "There is no stored game %s vs. %s\n",
 			    parray[wp].name,
 			    parray[bp].name);
@@ -139,7 +141,7 @@ com_adjudicate(int p, param_list param)
 			    parray[wp].name,
 			    parray[bp].name);
 		} else {
-			confused = 1;
+			confused = true;
 			pprintf(p, "Result must be one of: abort draw white "
 			    "black\n");
 		}
@@ -231,7 +233,7 @@ add_item(char *new_item, char *filename)
 		fprintf(new_fp, "%s", junk);
 	}
 
-  end:
+end:
 	(void) fclose(new_fp);
 
 	if (old_fp) {
@@ -373,7 +375,7 @@ com_anews(int p, param_list param)
 	char		 count[10] = { '\0' };
 	char		 filename[MAX_FILENAME_SIZE] = { '\0' };
 	char		 junk[MAX_LINE_SIZE] = { '\0' };
-	int		 found = 0;
+	bool		 found = false;
 	long int	 lval = 0;
 	time_t		 crtime = 0;
 
@@ -461,7 +463,7 @@ com_anews(int p, param_list param)
 				crtime = lval;
 
 				if (!strcmp(count, param[0].val.word)) {
-					found = 1;
+					found = true;
 
 					junkp = nextword(junkp);
 					junkp = nextword(junkp);
@@ -534,13 +536,12 @@ PUBLIC int
 com_checkIP(int p, param_list param)
 {
 	char	*ipstr = param[0].val.word;
-	int	 p1;
 
 	ASSERT(parray[p].adminLevel >= ADMIN_ADMIN);
 
 	pprintf(p, "Matches the following player(s):\n\n");
 
-	for (p1 = 0; p1 < p_num; p1++) {
+	for (int p1 = 0; p1 < p_num; p1++) {
 		if (!strcmpwild(dotQuad(parray[p1].thisHost), ipstr) &&
 		    (parray[p1].status != PLAYER_EMPTY)) {
 			pprintf(p, "%16.16s %s\n", parray[p1].name,
@@ -555,15 +556,14 @@ PUBLIC int
 com_checkSOCKET(int p, param_list param)
 {
 	int	fd = param[0].val.integer;
-	int	p1, flag;
 
 	ASSERT(parray[p].adminLevel >= ADMIN_ADMIN);
 
-	flag = 0;
+	bool flag = false;
 
-	for (p1 = 0; p1 < p_num; p1++) {
+	for (int p1 = 0; p1 < p_num; p1++) {
 		if (parray[p1].socket == fd) {
-			flag = 1;
+			flag = true;
 			pprintf(p, "Socket %d is used by %s\n", fd,
 			    parray[p1].name);
 		}
@@ -601,11 +601,10 @@ PUBLIC int
 com_checkPLAYER(int p, param_list param)
 {
 	char	*v_player = param[0].val.word;
-	int	 p1;
 
 	ASSERT(parray[p].adminLevel >= ADMIN_ADMIN);
 
-	p1 = player_search(p, param[0].val.word);
+	int p1 = player_search(p, param[0].val.word);
 
 	if (!p1)
 		return COM_OK;
@@ -698,7 +697,7 @@ com_checkGAME(int p, param_list param)
 {
 	char		 tmp[10 + 1 + 7];	// enough to store number
 						// 'black: ' and '\0'
-	int		 found = 0;
+	bool		 found = false;
 	int		 p1, g, link;
 	multicol	*m;
 	time_t		 startTime;
@@ -732,14 +731,14 @@ com_checkGAME(int p, param_list param)
 					msnprintf(tmp, sizeof tmp, "White: %d",
 					    g);
 					multicol_store(m, tmp);
-					found = 1;
+					found = true;
 				}
 				if (!strcasecmp(garray[g].black_name,
 				    param[0].val.word)) {
 					msnprintf(tmp, sizeof tmp, "Black: %d",
 					    g);
 					multicol_store(m, tmp);
-					found = 1;
+					found = true;
 				}
 			}
 
@@ -768,14 +767,14 @@ com_checkGAME(int p, param_list param)
 					msnprintf(tmp, sizeof tmp, "White: %d",
 					    g);
 					multicol_store(m, tmp);
-					found = 1;
+					found = true;
 				}
 
 				if (garray[g].black == p1) {
 					msnprintf(tmp, sizeof tmp, "Black: %d",
 					    g);
 					multicol_store(m, tmp);
-					found = 1;
+					found = true;
 				}
 			}
 

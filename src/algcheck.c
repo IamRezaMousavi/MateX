@@ -555,7 +555,7 @@ alg_unparse(game_state_t *gs, move_t *mt)
 		}
 	}
 
-  check:
+check:
 
 	fakeMove = *gs;
 	execute_move(&fakeMove, mt, 0);

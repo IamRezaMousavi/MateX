@@ -26,6 +26,7 @@
 
 #include "multicol.h"
 
+#include <stdbool.h>
 #include <stdlib.h>
 #include <string.h>
 #include <err.h>
@@ -68,14 +69,14 @@ multicol_store(multicol *m, char *str)
 PUBLIC int
 multicol_store_sorted(multicol *m, char *str)
 {	// Use this instead of multicol_store() to print a list sorted.
-	int found = 0;
+	bool found = false;
 
 	if (m == NULL || str == NULL || m->num >= m->arraySize)
 		return -1;
 
 	for (int i = m->num; i > 0 && !found; i--) {
 		if (strcasecmp(str, m->strArray[i - 1]) >= 0) {
-			found = 1;
+			found = true;
 			m->strArray[i] = xstrdup(str);
 		} else {
 			m->strArray[i] = m->strArray[i - 1];
@@ -93,8 +94,6 @@ PUBLIC int
 multicol_pprint(multicol *m, int player, int cols, int space)
 {
 	char	*tempptr;
-	int	 done;
-	int	 i;
 	int	 maxWidth = 0;
 	int	 numLines;
 	int	 numPerLine;
@@ -103,7 +102,7 @@ multicol_pprint(multicol *m, int player, int cols, int space)
 
 	pprintf(player, "\n");
 
-	for (i = 0; i < m->num; i++) {
+	for (int i = 0; i < m->num; i++) {
 		tempptr = m->strArray[i];
 		temp = strlen(tempptr); // loon: yes, this is pathetic
 
@@ -125,10 +124,10 @@ multicol_pprint(multicol *m, int player, int cols, int space)
 		numLines++;
 
 	on = 0;
-	done = 0;
+	bool done = false;
 
 	while (!done) {
-		for (i = 0; i < numPerLine; i++) {
+		for (int i = 0; i < numPerLine; i++) {
 			if ((theone = on + numLines * i) >= m->num)
 				break;
 

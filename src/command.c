@@ -42,6 +42,7 @@
 
 #include <netinet/in.h>
 #include <sys/param.h>
+#include <stdbool.h>
 #include <string.h>
 #include <unistd.h>
 #include <ctype.h>
@@ -567,7 +568,7 @@ process_command(int p, char *com_string, char **cmd)
 PRIVATE int
 process_login(int p, char *loginname)
 {
-	int	problem = 1;
+	bool	problem = true;
 
 	loginname = eatwhite(loginname);
 
@@ -603,7 +604,7 @@ process_login(int p, char *loginname)
 			rfree(loginnameii);
 			return COM_LOGOUT;
 		} else {
-			problem = 0;
+			problem = false;
 
 			if (player_read(p, loginname)) {
 				rfree(parray[p].name);

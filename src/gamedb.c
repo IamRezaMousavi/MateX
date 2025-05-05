@@ -53,6 +53,7 @@
 #include <unistd.h>
 #include <limits.h>
 #include <stdlib.h>
+#include <stdbool.h>
 #include <sys/file.h>
 
 #if __linux__
@@ -847,11 +848,11 @@ PRIVATE int
 WriteMoves(FILE *fp, move_t *m)
 {
 	int		 i;
-	int		 piece, castle;
+	int		 piece;
 	int		 useFile = 0, useRank = 0, check = 0;
 	unsigned long	 MoveInfo = (m->color == BLACK);
 
-	castle = (m->moveString[0] == 'o');
+	bool castle = (m->moveString[0] == 'o');
 
 	if (castle)
 		piece = KING;
@@ -1230,9 +1231,7 @@ ReadOneV1Move(FILE *fp, move_t *m)
 	}
 
 	if (m->algString[0] != 'O') {
-		int ret, too_long;
-
-		ret = snprintf(m->moveString, sizeof m->moveString,
+		int ret = snprintf(m->moveString, sizeof m->moveString,
 		    "%c/%c%d-%c%d",
 		    PieceChar,
 		    ('a' + m->fromFile),
@@ -1240,7 +1239,7 @@ ReadOneV1Move(FILE *fp, move_t *m)
 		    ('a' + m->toFile),
 		    (m->toRank + 1));
 
-		too_long = (ret < 0 || (size_t)ret >= sizeof m->moveString);
+		bool too_long = (ret < 0 || (size_t)ret >= sizeof m->moveString);
 
 		if (too_long) {
 			fprintf(stderr, "FICS: %s: warning: "
@@ -1929,7 +1928,7 @@ addjournalitem(int p, char count2, char *WhiteName2, int WhiteRating2,
 	char	 result[100] = { '\0' };
 	char	 type[100] = { '\0' };
 	int	 WhiteRating, BlackRating;
-	int	 have_output = 0;
+	bool	 have_output = false;
 	int	 t, i;
 
 	mstrlcpy(fname2, fname, sizeof fname2);
@@ -1995,7 +1994,7 @@ addjournalitem(int p, char count2, char *WhiteName2, int WhiteRating2,
 				    eco2,
 				    ending2,
 				    result2);
-				have_output = 1;
+				have_output = true;
 			}
 
 			if (count != count2) {

@@ -9,7 +9,7 @@
 
 #include <err.h>
 #include <string.h>
-
+#include <stdbool.h>
 
 #include "common.h"
 #include "command.h"
@@ -57,9 +57,8 @@ list_find(int p, enum ListWhich l)
 {
 	List	*prev = NULL, *tempList, **starter;
 	int	 count = 0;
-	int	 personal;
 
-	personal	= ListArray[l].rights == P_PERSONAL;
+	bool personal	= ListArray[l].rights == P_PERSONAL;
 
 	if (personal) {
 		if (p < 0)
@@ -216,25 +215,25 @@ list_findpartial(int p, char *which, int gonnado)
 
 	if (foundit != -1) {
 		int	rights = ListArray[foundit].rights;
-		int	youlose = 0;
+		bool	youlose = false;
 
 		switch (rights) { // check rights
 		case P_HEAD:
 			if (gonnado && !player_ishead(p))
-				youlose = 1;
+				youlose = true;
 			break;
 		case P_GOD:
 			if ((gonnado && parray[p].adminLevel < ADMIN_GOD) ||
 			    (!gonnado && parray[p].adminLevel < ADMIN_ADMIN))
-				youlose = 1;
+				youlose = true;
 			break;
 		case P_ADMIN:
 			if (parray[p].adminLevel < ADMIN_ADMIN)
-				youlose = 1;
+				youlose = true;
 			break;
 		case P_PUBLIC:
 			if (gonnado && (parray[p].adminLevel < ADMIN_ADMIN))
-				youlose = 1;
+				youlose = true;
 			break;
 		}
 
@@ -260,7 +259,7 @@ PUBLIC int
 in_list(int p, enum ListWhich which, char *member)
 {
 	List	*gl;
-	int	 filterList = (which == L_FILTER);
+	bool	 filterList = (which == L_FILTER);
 
 	if ((gl = list_find(p, which)) == NULL || member == NULL)
 		return 0;
@@ -286,13 +285,13 @@ list_addsub(int p, char *list, char *who, int addsub)
 	List	*gl;
 	char	*listname, *member;
 	char	*yourthe, *addrem;
-	int	 p1 = -1, connected, loadme, personal, ch;
+	int	 p1 = -1, connected, ch;
 
 	if ((gl = list_findpartial(p, list, addsub)) == NULL)
 		return COM_OK;
 
-	personal	= (ListArray[gl->which].rights == P_PERSONAL);
-	loadme		= (gl->which != L_FILTER &&
+	bool personal	= (ListArray[gl->which].rights == P_PERSONAL);
+	bool loadme		= (gl->which != L_FILTER &&
 	    gl->which != L_REMOVEDCOM &&
 	    gl->which != L_CHANNEL);
 	listname	= ListArray[gl->which].name;

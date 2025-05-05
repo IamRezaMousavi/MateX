@@ -39,6 +39,7 @@
 #include "matchproc.h"
 
 #include <sys/resource.h>
+#include <stdbool.h>
 #include <string.h>
 #include <stdlib.h>
 #include <ctype.h>
@@ -82,14 +83,14 @@ create_new_match(int white_player, int black_player, int wt, int winc, int bt,
     int binc, int rated, char *category, char *board, int white)
 {
 	char	outStr[1024] = { '\0' };
-	int	g, p;
-	int	reverse = 0;
+	int	g;
+	bool	reverse = false;
 
 	if ((g = game_new()) < 0)
 		return COM_FAILED;
 
 	if (white == 0) {
-		reverse = 1;
+		reverse = true;
 	} else if (white == -1) {
 		if (wt == bt && winc == binc) {
 			if (parray[white_player].lastColor ==
@@ -102,11 +103,11 @@ create_new_match(int white_player, int black_player, int wt, int winc, int bt,
 					 parray[black_player].num_black);
 
 				if (diff1 > diff2)
-					reverse = 1;
+					reverse = true;
 			} else if (parray[white_player].lastColor == WHITE)
-				reverse = 1;
+				reverse = true;
 		} else
-			reverse = 1;	// Challenger is always white in
+			reverse = true;	// Challenger is always white in
 					// unbalanced match
 	}
 
@@ -238,7 +239,7 @@ create_new_match(int white_player, int black_player, int wt, int winc, int bt,
 	pprintf(white_player, "%s", outStr);
 	pprintf(black_player, "%s", outStr);
 
-	for (p = 0; p < p_num; p++) {
+	for (int p = 0; p < p_num; p++) {
 		int	gnw, gnb;
 
 		if ((p == white_player) || (p == black_player))

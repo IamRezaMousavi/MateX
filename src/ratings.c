@@ -38,6 +38,7 @@
 #include "ratings.h"
 
 #include <sys/dir.h>
+#include <stdbool.h>
 #include <limits.h>
 #include <stdint.h>
 #include <ctype.h>
@@ -876,7 +877,7 @@ PUBLIC int
 rating_update(int g)
 {
 	double		 wSigma, bSigma;
-	int		 inprogress = (g == parray[garray[g].black].game);
+	bool		 inprogress = (g == parray[garray[g].black].game);
 	int		 wDelta, bDelta;
 	int		 wRes, bRes;
 	statistics	*b_stats;
@@ -1642,11 +1643,11 @@ ShowRankEntry(int p, FILE *fp, int count, int comp, char *target,
 {
 	char	login[MAX_LOGIN_NAME] = { '\0' };
 	char	newLine[MAX_RANK_LINE] = { '\0' };
-	int	rating, findable, nGames, is_comp;
+	int	rating, nGames, is_comp;
 
 	// XXX
 	rating		= 0;
-	findable	= (count > 0 && !feof(fp) && !ferror(fp));
+	bool findable	= (count > 0 && !feof(fp) && !ferror(fp));
 	nGames		= 0;
 	is_comp		= 0;
 
@@ -1655,7 +1656,7 @@ ShowRankEntry(int p, FILE *fp, int count, int comp, char *target,
 			if (fgets(newLine, sizeof newLine, fp) == NULL ||
 			    feof(fp) ||
 			    ferror(fp)) {
-				findable = 0;
+				findable = false;
 			} else if (newLine[0] != '\0') {
 				_Static_assert(ARRAY_SIZE(login) > 19,
 				    "Assertion has failed");
@@ -1663,7 +1664,7 @@ ShowRankEntry(int p, FILE *fp, int count, int comp, char *target,
 				if (sscanf(newLine, "%19s %d %d %d", login,
 				    &rating, &nGames, &is_comp) != 4) {
 					warnx("%s: sscanf() error", __func__);
-					findable = 0;
+					findable = false;
 					break;
 				}
 			} else {

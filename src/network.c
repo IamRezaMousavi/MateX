@@ -563,10 +563,9 @@ net_close_connection(int fd)
 PUBLIC void
 turn_echo_on(int fd)
 {
-	int ret;
 	static unsigned char wont_echo[] = {IAC, WONT, TELOPT_ECHO, '\0'};
 
-	ret = send(fd, (char *)wont_echo, sizeof wont_echo - 1, 0);
+	int ret = send(fd, (char *)wont_echo, sizeof wont_echo - 1, 0);
 	if (ret == -1)
 		warn("%s: cannot send", __func__);
 }
@@ -574,10 +573,9 @@ turn_echo_on(int fd)
 PUBLIC void
 turn_echo_off(int fd)
 {
-	int ret;
 	static unsigned char will_echo[] = {IAC, WILL, TELOPT_ECHO, '\0'};
 
-	ret = send(fd, (char *)will_echo, sizeof will_echo - 1, 0);
+	int ret = send(fd, (char *)will_echo, sizeof will_echo - 1, 0);
 	if (ret == -1)
 		warn("%s: cannot send", __func__);
 }

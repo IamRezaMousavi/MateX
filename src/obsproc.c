@@ -38,6 +38,7 @@
 #include "obsproc.h"
 
 #include <sys/dir.h>
+#include <stdbool.h>
 #include <string.h>
 #include <stdlib.h>
 #include <unistd.h>
@@ -119,11 +120,10 @@ com_games(int p, param_list param)
 	int	 i, j;
 	int	 selected = 0;
 	int	 slen = 0;
-	int	 totalcount;
 	int	 wp, bp;
 	int	 ws, bs;
 
-	totalcount = game_count();
+	int totalcount = game_count();
 
 	if (totalcount == 0) {
 		pprintf(p, "There are no games in progress.\n");
@@ -367,7 +367,6 @@ PUBLIC int
 com_allobservers(int p, param_list param)
 {
 	int	first;
-	int	g;
 	int	obgame;
 	int	p1;
 	int	start, end;
@@ -397,7 +396,7 @@ com_allobservers(int p, param_list param)
 	/*
 	 * list games being played
 	 */
-	for (g = start; g < end; g++) {
+	for (int g = start; g < end; g++) {
 		if ((garray[g].status == GAME_ACTIVE) &&
 		    ((parray[p].adminLevel > 0) ||
 		    (garray[g].private == 0))) {
@@ -427,7 +426,7 @@ com_allobservers(int p, param_list param)
 	/*
 	 * list games being examined last
 	 */
-	for (g = start; g < end; g++) {
+	for (int g = start; g < end; g++) {
 		if ((garray[g].status == GAME_EXAMINE) &&
 		    ((parray[p].adminLevel > 0) ||
 		    (garray[g].private == 0))) {
@@ -759,7 +758,7 @@ ExamineScratch(int p, param_list param)
 	char	 board[100];
 	char	 category[100];
 	char	 parsebuf[100];
-	int	 confused = 0;
+	bool	 confused = false;
 	int	 g = game_new();
 
 	unobserveAll(p);
@@ -808,7 +807,7 @@ ExamineScratch(int p, param_list param)
 			} else if (category[0] == '\0') {
 				mstrlcpy(category, parsebuf, sizeof category);
 			} else {
-				confused = 1;
+				confused = true;
 			}
 		}
 
@@ -1229,7 +1228,8 @@ stored_mail_moves(int p, int mail, param_list param)
 	char	*param2string = NULL;
 	char	 fileName2[MAX_FILENAME_SIZE];
 	int	 g = -1;
-	int	 wp, wconnected, bp, bconnected, gotit = 0;
+	int	 wp, wconnected, bp, bconnected;
+	bool gotit = false;
 
 	if (mail && !parray[p].registered) {
 		pprintf(p, "Unregistered players cannot use mailstored.\n");
@@ -1254,7 +1254,7 @@ stored_mail_moves(int p, int mail, param_list param)
 					pprintf(p, "Gamefile is corrupt; "
 					    "please notify an admin.\n");
 				else
-					gotit = 1;
+					gotit = true;
 
 				fclose(fpGame);
 			}
@@ -1306,7 +1306,7 @@ stored_mail_moves(int p, int mail, param_list param)
 							    "please notify an "
 							    "admin.\n");
 						else
-							gotit = 1;
+							gotit = true;
 
 						fclose(fpGame);
 					}
@@ -1322,9 +1322,9 @@ stored_mail_moves(int p, int mail, param_list param)
 				g = game_new();
 
 				if (game_read(g, wp, bp) >= 0) {
-					gotit = 1;
+					gotit = true;
 				} else if (game_read(g, bp, wp) >= 0) {
-					gotit = 1;
+					gotit = true;
 				} else {
 					pprintf(p, "There is no stored game "
 					    "%s vs. %s\n",
@@ -1408,7 +1408,8 @@ PUBLIC int
 com_sposition(int p, param_list param)
 {
 	int	g;
-	int	wp, wconnected, bp, bconnected, confused = 0;
+	int	wp, wconnected, bp, bconnected;
+	bool confused = false;
 
 	if (!FindPlayer(p, param[0].val.word, &wp, &wconnected))
 		return (COM_OK);
@@ -1422,7 +1423,7 @@ com_sposition(int p, param_list param)
 
 	if (game_read(g, wp, bp) < 0) {		// if no game white-black,
 		if (game_read(g, bp, wp) < 0) {	// look for black-white
-			confused = 1;
+			confused = true;
 
 			pprintf(p, "There is no stored game %s vs. %s\n",
 			    parray[wp].name,
