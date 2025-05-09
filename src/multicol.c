@@ -44,7 +44,7 @@ multicol_start(int maxArray)
 	m = rmalloc(sizeof(multicol));
 	m->arraySize	= maxArray;
 	m->num		= 0;
-	m->strArray	= reallocarray(NULL, sizeof(char *), m->arraySize);
+	m->strArray	= reallocarray(NULL, m->arraySize, sizeof(char *));
 
 	if (m->strArray == NULL)
 		err(1, "%s: reallocarray", __func__);

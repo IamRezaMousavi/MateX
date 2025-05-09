@@ -458,18 +458,14 @@ process_move(int p, char *command)
 								// time
 			if (!garray[g].examMoveList) {
 				garray[g].examMoveList =
-				    reallocarray(NULL,
-				    sizeof(move_t),
-				    garray[g].examMoveListSize);
+					reallocarray(NULL, garray[g].examMoveListSize, sizeof(move_t));
 				if (garray[g].examMoveList == NULL)
 					err(1, "%s: reallocarray", __func__);
 				else
 					malloc_count++;
 			} else {
 				garray[g].examMoveList =
-				    reallocarray(garray[g].examMoveList,
-				    sizeof(move_t),
-				    garray[g].examMoveListSize);
+					reallocarray(garray[g].examMoveList, garray[g].examMoveListSize, sizeof(move_t));
 				if (garray[g].examMoveList == NULL)
 					err(1, "%s: reallocarray", __func__);
 			}
@@ -630,18 +626,14 @@ process_move(int p, char *command)
 
 			if (!garray[g].moveList) {
 				garray[g].moveList =
-				    reallocarray(NULL,
-				    sizeof(move_t),
-				    garray[g].moveListSize);
+					reallocarray(NULL, garray[g].moveListSize, sizeof(move_t));
 				if (garray[g].moveList == NULL)
 					err(1, "%s: reallocarray", __func__);
 				else
 					malloc_count++;
 			} else {
 				garray[g].moveList =
-				    reallocarray(garray[g].moveList,
-				    sizeof(move_t),
-				    garray[g].moveListSize);
+					reallocarray(garray[g].moveList, garray[g].moveListSize, sizeof(move_t));
 				if (garray[g].moveList == NULL)
 					err(1, "%s: reallocarray", __func__);
 			}

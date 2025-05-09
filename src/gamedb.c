@@ -113,14 +113,14 @@ get_empty_slot(void)
 	g_num++;
 
 	if (!garray) {
-		garray = reallocarray(NULL, sizeof(game), g_num);
+		garray = reallocarray(NULL, g_num, sizeof(game));
 
 		if (garray == NULL)
 			err(1, "%s: reallocarray", __func__);
 		else
 			malloc_count++;
 	} else {
-		garray = reallocarray(garray, sizeof(game), g_num);
+		garray = reallocarray(garray, g_num, sizeof(game));
 
 		if (garray == NULL)
 			err(1, "%s: reallocarray", __func__);
@@ -1083,8 +1083,7 @@ got_attr_value(int g, char *attr, char *value, FILE *fp, char *file)
 		}
 
 		garray[g].moveListSize = garray[g].numHalfMoves;
-		garray[g].moveList = reallocarray(NULL, sizeof(move_t),
-		    garray[g].moveListSize);
+		garray[g].moveList = reallocarray(NULL, garray[g].moveListSize, sizeof(move_t));
 
 		if (garray[g].moveList == NULL)
 			err(1, "%s: reallocarray", __func__);
@@ -1255,7 +1254,7 @@ PRIVATE int
 ReadV1Moves(game *g, FILE *fp)
 {
 	g->moveListSize = g->numHalfMoves;
-	g->moveList = reallocarray(NULL, sizeof(move_t), g->moveListSize);
+	g->moveList = reallocarray(NULL, g->moveListSize, sizeof(move_t));
 
 	if (g->moveList == NULL)
 		err(1, "%s: reallocarray", __func__);

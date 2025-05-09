@@ -57,8 +57,8 @@ GetPlayerInfo(char *fileName, ENTRY *e)
 			   fgets(line, sizeof line, fp) == NULL ||
 			   fgets(line, sizeof line, fp) == NULL) {
 			warnx("%s: fgets() error", __func__);
-//			fclose(fp);
-//			return 0;
+			// fclose(fp);
+			// return 0;
 		}
 
 		if (fscanf(fp, "%d %*u %*u %*u %d %*u %*u %*u %*u %d %*u %*u "
@@ -162,7 +162,7 @@ LoadEntries(void)
 	int	 listsize;
 
 	listsize	= 100;
-	list		= reallocarray(NULL, sizeof(ENTRY *), listsize);
+	list		= reallocarray(NULL, listsize, sizeof(ENTRY *));
 
 	if (list == NULL)
 		err(1, "%s: reallocarray", __func__);
@@ -274,8 +274,7 @@ makerank(void)
 	for (rtype = 0; rtype < 4; rtype++) {
 		sortnum		= 0;
 		sortmesize	= 100;
-		sortme		= reallocarray(NULL, sizeof(ENTRY *),
-		    sortmesize);
+		sortme		= reallocarray(NULL, sortmesize, sizeof(ENTRY *));
 
 		if (sortme == NULL)
 			err(1, "%s: reallocarray", __func__);

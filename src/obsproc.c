@@ -1524,17 +1524,13 @@ com_forward(int p, param_list param)
 
 				if (!garray[g].examMoveList) {
 					garray[g].examMoveList =
-					    reallocarray(NULL,
-					    sizeof(move_t),
-					    garray[g].examMoveListSize);
+						reallocarray(NULL, garray[g].examMoveListSize, sizeof(move_t));
 					if (garray[g].examMoveList == NULL)
 						err(1, "%s", __func__);
 					malloc_count++;
 				} else {
 					garray[g].examMoveList =
-					    reallocarray(garray[g].examMoveList,
-					    sizeof(move_t),
-					    garray[g].examMoveListSize);
+						reallocarray(garray[g].examMoveList, garray[g].examMoveListSize, sizeof(move_t));
 					if (garray[g].examMoveList == NULL)
 						err(1, "%s", __func__);
 				}
